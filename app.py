@@ -1,9 +1,18 @@
 from flask import Flask, render_template, request
 import xml.etree.ElementTree as ET
+import os
 
 app = Flask(__name__)
 
 comments_file = 'comments.xml'
+
+def create_comments_xml():
+    root = ET.Element('comments')
+    tree = ET.ElementTree(root)
+    tree.write(comments_file)
+
+if not os.path.exists(comments_file):
+    create_comments_xml()
 
 def save_comment_to_xml(name, text):
     tree = ET.parse(comments_file)
@@ -26,4 +35,4 @@ def rss_feed():
     return ET.tostring(ET.parse(comments_file).getroot(), encoding='unicode')
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    app.run(debug=True,port=5000, host='0.0.0.0')
