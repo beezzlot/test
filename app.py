@@ -43,8 +43,21 @@ def index():
 
 @app.route('/rss')
 def rss_feed():
-    parser = ET.XMLParser(resolve_entities=False)  # Отключение обработки сущностей для безопасности
-    return ET.tostring(ET.parse(comments_file, parser).getroot(), encoding='unicode')
+    parser = ET.XMLParser(resolve_entities=False)
+    rss = ET.Element('rss')
+    tree = ET.parse(comments_file, parser)
+    root = tree.getroot()
+    comments = root.findall('comment')
+    
+    for comment in comments:
+        comment_element = ET.SubElement(rss, 'comment')
+        name = comment.find('name').text
+        text = comment.find('text').text
+        ET.SubElement(comment_element, 'name').text = name
+        ET.SubElement(comment_element, 'text').text = text
+    
+    return ET.tostring(rss, encoding='unicode')
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000, host='0.0.0.0')
