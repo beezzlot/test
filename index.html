@@ -1,22 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
     <title>Comments</title>
 </head>
 <body>
     <h1>Comments</h1>
     <ul>
         {% for comment in comments %}
-        <li><strong>{{ comment.name }}</strong>: {{ comment.text }}</li>
+        <li>{{ comment.name }}: {{ comment.text }}</li>
         {% endfor %}
     </ul>
-    
-    <h2>Add a Comment</h2>
-    <form method="post">
-        <input type="text" name="name" placeholder="Your Name" required><br>
-        <textarea name="comment" placeholder="Your Comment" required></textarea><br>
-        <button type="submit">Submit</button>
-    </form>
 </body>
 </html>
