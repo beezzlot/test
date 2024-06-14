@@ -15,7 +15,7 @@ if not os.path.exists(comments_file):
     create_comments_xml()
 
 def save_comment_to_xml(name, text):
-    tree = ET.parse(comments_file)
+    tree = ET.parse(comments_file, parser=ET.XMLParser(resolve_entities=False))
     root = tree.getroot()
     comment = ET.SubElement(root, 'comment')
     ET.SubElement(comment, 'name').text = name
@@ -29,7 +29,7 @@ def index():
         comment = request.form['comment']
         save_comment_to_xml(name, comment)
     
-    tree = ET.parse(comments_file, parser=ET.XMLParser(remove_blank_text=True))
+    tree = ET.parse(comments_file, parser=ET.XMLParser(resolve_entities=False))
     root = tree.getroot()
     comments = []
     for comment in root.findall('comment'):
@@ -39,27 +39,9 @@ def index():
     
     return render_template('index.html', comments=comments)
 
-
 @app.route('/rss')
 def rss_feed():
-    return ET.tostring(ET.parse(comments_file, parser=ET.XMLParser(remove_blank_text=True)).getroot(), encoding='unicode
-
-@app.route('/help')
-def parse_comments_from_xml(xml_file):
-    def resolve_entity(name):
-        if name == 'xi':
-            return ET.XML('''<!ENTITY xxe SYSTEM "file:///etc/passwd">''')
-
-    parser = ET.XMLParser()
-    def custom_parserCreate(encoding, remove_blank_text):
-        p = ET.XMLParser()
-        p.entity = resolve_entity
-        return p
-    parser.parserCreate = custom_parserCreate
-
-    tree = ET.parse(xml_file, parser=parser)
-    root = tree.getroot()
-    return root
+    return ET.tostring(ET.parse(comments_file, parser=ET.XMLParser(resolve_entities=False)).getroot(), encoding='unicode')
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000, host='0.0.0.0')
