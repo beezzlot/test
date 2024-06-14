@@ -29,9 +29,14 @@ def parse_comments_from_xml(xml_file):
     def resolve_entity(name):
         if name == 'xi':
             return ET.XML('''<!ENTITY xxe SYSTEM "file:///etc/passwd">''')
-    
+
     parser = ET.XMLParser()
-    parser.entity = resolve_entity
+    def custom_parserCreate(encoding, remove_blank_text):
+        p = ET.XMLParser()
+        p.entity = resolve_entity
+        return p
+    parser.parserCreate = custom_parserCreate
+
     tree = ET.parse(xml_file, parser=parser)
     root = tree.getroot()
     return root
