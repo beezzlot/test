@@ -41,22 +41,22 @@ def index():
     
     return render_template('index.html', comments=comments)
 
-@app.route('/rss')
-def rss_feed():
-    parser = ET.XMLParser(resolve_entities=False)
-    rss = ET.Element('rss')
-    tree = ET.parse(comments_file, parser)
-    root = tree.getroot()
-    comments = root.findall('comment')
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        name = request.form['name']
+        comment = request.form['comment']
+        save_comment_to_xml(name, comment)
     
-    for comment in comments:
-        comment_element = ET.SubElement(rss, 'comment')
+    tree = ET.parse(comments_file)
+    root = tree.getroot()
+    comments = []
+    for comment in root.findall('comment'):
         name = comment.find('name').text
         text = comment.find('text').text
-        ET.SubElement(comment_element, 'name').text = name
-        ET.SubElement(comment_element, 'text').text = text
+        comments.append({'name': name, 'text': text})
     
-    return ET.tostring(rss, encoding='unicode')
+    return render_template('index.html', comments=comments)
 
 
 if __name__ == '__main__':
