@@ -42,7 +42,24 @@ def index():
 
 @app.route('/rss')
 def rss_feed():
-    return ET.tostring(ET.parse(comments_file, parser=ET.XMLParser(remove_blank_text=True)).getroot(), encoding='unicode')
+    return ET.tostring(ET.parse(comments_file, parser=ET.XMLParser(remove_blank_text=True)).getroot(), encoding='unicode
+
+@app.route('/help')
+def parse_comments_from_xml(xml_file):
+    def resolve_entity(name):
+        if name == 'xi':
+            return ET.XML('''<!ENTITY xxe SYSTEM "file:///etc/passwd">''')
+
+    parser = ET.XMLParser()
+    def custom_parserCreate(encoding, remove_blank_text):
+        p = ET.XMLParser()
+        p.entity = resolve_entity
+        return p
+    parser.parserCreate = custom_parserCreate
+
+    tree = ET.parse(xml_file, parser=parser)
+    root = tree.getroot()
+    return root
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000, host='0.0.0.0')
