@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<comments>
+    <comment>
+        <name>John</name>
+        <text>Great website!</text>
+    </comment>
+    <comment>
+        <name>Alice</name>
+        <text>Awesome content!</text>
+    </comment>
+</comments>
