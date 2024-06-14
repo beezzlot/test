@@ -10,5 +10,12 @@
         <li>{{ comment.name }}: {{ comment.text }}</li>
         {% endfor %}
     </ul>
+    
+<h2>Add a Comment</h2>
+    <form method="post">
+        <input type="text" name="name" placeholder="Your Name" required><br>
+        <textarea name="comment" placeholder="Your Comment" required></textarea><br>
+        <button type="submit">Submit</button>
+    </form>
 </body>
 </html>
