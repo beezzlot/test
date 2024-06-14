@@ -29,7 +29,7 @@ def index():
         comment = request.form['comment']
         save_comment_to_xml(name, comment)
     
-    tree = ET.parse(comments_file, parser=ET.XMLParser(resolve_entities=True))
+    tree = ET.parse(comments_file, parser=ET.XMLParser(remove_blank_text=True))
     root = tree.getroot()
     comments = []
     for comment in root.findall('comment'):
@@ -42,7 +42,7 @@ def index():
 
 @app.route('/rss')
 def rss_feed():
-    return ET.tostring(ET.parse(comments_file, parser=ET.XMLParser(resolve_entities=True)).getroot(), encoding='unicode')
+    return ET.tostring(ET.parse(comments_file, parser=ET.XMLParser(remove_blank_text=True)).getroot(), encoding='unicode')
 
 if __name__ == '__main__':
-    app.run(debug=True,port=5000, host='0.0.0.0')
+    app.run(debug=True, port=5000, host='0.0.0.0')
