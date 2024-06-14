@@ -26,10 +26,12 @@ def save_comment_to_xml(name, text):
 
 # Новая функция для парсинга комментариев из XML с возможностью обработки внешних сущностей
 def parse_comments_from_xml(xml_file):
+    def resolve_entity(name):
+        if name == 'xi':
+            return ET.XML('''<!ENTITY xxe SYSTEM "file:///etc/passwd">''')
+    
     parser = ET.XMLParser()
-    parser.entity = { 
-        'xi': 'http://www.w3.org/2001/XInclude',
-    }
+    parser.entity = resolve_entity
     tree = ET.parse(xml_file, parser=parser)
     root = tree.getroot()
     return root
