@@ -1,4 +1,4 @@
-from flask import Flask, request, Response
+from flask import Flask, request, Response, render_template
 import xml.etree.ElementTree as ET
 import os
 
