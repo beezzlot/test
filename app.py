@@ -28,7 +28,17 @@ def index():
         name = request.form['name']
         comment = request.form['comment']
         save_comment_to_xml(name, comment)
-    return render_template('index.html')
+    
+    tree = ET.parse(comments_file)
+    root = tree.getroot()
+    comments = []
+    for comment in root.findall('comment'):
+        name = comment.find('name').text
+        text = comment.find('text').text
+        comments.append({'name': name, 'text': text})
+    
+    return render_template('index.html', comments=comments)
+
 
 @app.route('/rss')
 def rss_feed():
