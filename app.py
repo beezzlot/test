@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, request, Response
 import xml.etree.ElementTree as ET
 import os
 
@@ -41,7 +41,8 @@ def index():
 
 @app.route('/rss')
 def rss_feed():
-    return ET.tostring(ET.parse(comments_file).getroot(), encoding='unicode')
+    xml_data = ET.tostring(ET.parse(comments_file).getroot(), encoding='unicode')
+    return Response(xml_data, mimetype='application/xml')
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000, host='0.0.0.0')
