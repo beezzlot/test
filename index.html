@@ -1,20 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Comment Image</title>
+    <meta charset="UTF-8">
+    <title>Comments</title>
 </head>
 <body>
-    <h1>Comment the Image</h1>
-    <img src="/static/image.png" alt="Image">
+    <h1>Comments</h1>
+    <ul>
+        {% for comment in comments %}
+        <li><strong>{{ comment.name }}</strong>: {{ comment.text }}</li>
+        {% endfor %}
+    </ul>
     
+    <h2>Add a Comment</h2>
     <form method="post">
-        <label for="name">Name:</label><br>
-        <input type="text" id="name" name="name"><br>
-        
-        <label for="comment">Comment:</label><br>
-        <textarea id="comment" name="comment" rows="4" cols="50"></textarea><br>
-        
-        <input type="submit" value="Submit">
+        <input type="text" name="name" placeholder="Your Name" required><br>
+        <textarea name="comment" placeholder="Your Comment" required></textarea><br>
+        <button type="submit">Submit</button>
     </form>
 </body>
 </html>
