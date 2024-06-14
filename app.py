@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 import xml.etree.ElementTree as ET
+from xml.etree.ElementTree import XMLParser
 import os
 
 app = Flask(__name__)
@@ -14,8 +15,16 @@ def create_comments_xml():
 if not os.path.exists(comments_file):
     create_comments_xml()
 
+class CustomXMLParser(XMLParser):
+    def __init__(self):
+        XMLParser.__init__(self)
+        self.entity = dict()
+
+    def entity(self, name):
+        return "&" + name
+
 def save_comment_to_xml(name, text):
-    tree = ET.parse(comments_file, parser=ET.XMLParser(resolve_entities=False))
+    tree = ET.parse(comments_file, parser=CustomXMLParser())
     root = tree.getroot()
     comment = ET.SubElement(root, 'comment')
     ET.SubElement(comment, 'name').text = name
@@ -29,7 +38,7 @@ def index():
         comment = request.form['comment']
         save_comment_to_xml(name, comment)
     
-    tree = ET.parse(comments_file, parser=ET.XMLParser(resolve_entities=False))
+    tree = ET.parse(comments_file, parser=CustomXMLParser())
     root = tree.getroot()
     comments = []
     for comment in root.findall('comment'):
@@ -41,7 +50,7 @@ def index():
 
 @app.route('/rss')
 def rss_feed():
-    return ET.tostring(ET.parse(comments_file, parser=ET.XMLParser(resolve_entities=False)).getroot(), encoding='unicode')
+    return ET.tostring(ET.parse(comments_file, parser=CustomXMLParser()).getroot(), encoding='unicode')
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000, host='0.0.0.0')
